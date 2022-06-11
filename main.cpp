@@ -244,7 +244,6 @@ class croom{
             if(Mhs[k].name==""){
                 return;
             }
-            int be = 0;
             cout << endl;
             cout << "Class " << subjek << endl;
             cout << "Name  : " << Mhs[k].name << endl;
@@ -257,8 +256,6 @@ class croom{
             Mhs[a.NRP] = a;
             nilai[a.NRP] = 0;
             jumlah_mhs++;
-            //cout << "Input successful!\n" << jumlah_mhs << " ";
-            //pause();
             return;
         }
 
@@ -275,22 +272,9 @@ class croom{
             return;
         }
 
-        void get_nilai(){
-            int k = 1;
-            map<string,mahasiswa>::iterator tro;
-            map<string,int>::iterator tru;
-            for(tro = Mhs.begin(), tru = nilai.begin(); tro != Mhs.end(); tro++){
-                cout << k << ". " << tro->second.NRP << " " << tru->second << endl;
-            }
-            cout << endl;
-            return;
-        }
-
         void input_nilaiauto(string k, int bro){ //string = NRP
             int be = 0;
             nilai[k] = bro;
-            //cout << "Input successful!\nName: " << Mhs[k].name << "\nGrade: " << nilai[k] << endl;
-            //pause();
             return;
         }
 
@@ -514,32 +498,38 @@ void main_menu(){
                 logo();
                 cout << endl;
                 vector<croom>::iterator it;
-                int in, b = 0;
+                int bro = 0, in, b = 0;
                 it = datacroom.begin();
                 while(it!=datacroom.end()){
+                    map<string,mahasiswa>::iterator w;
+                    for(w = it->Mhs.begin(); w != it->Mhs.end(); w++){
+                        if(dataMhs[gol].NRP == w->first){
+                            goto kek;
+                        }
+                    }
                     cout << "Class number " << b+1 << endl;
                     it->getinfo();
                     it->get_mhs();
+                    bro++;
+                    kek:
                     b++;
                     it++;
                 }
-                cout << "Which class do you want to join? Please input the class number: ";
-                cin >> in;
-                map<string,mahasiswa>::iterator w;
-                for(w = datacroom[in-1].Mhs.begin(); w != datacroom[in-1].Mhs.end(); w++){
-                    if(w->second.NRP==dataMhs[gol].NRP){
-                        cout << "You already are a student of this class!" << endl;
-                        pause();
-                        goto exfile;
-                    }
+                if(bro == 0){
+                    cout << "\nYou are already a student of all available class!\n" << endl;
+
+                } else {
+                    cout << "Which class do you want to join? Please input the class number: ";
+                    cin >> in;
+                    datpermit[gol] = datacroom[in-1];
+                    clear();
+                    logo();
+                    cout << "\nRequest to join class sent!\nPlease wait until confirmation!\n Class info:\n Class number " << in << endl;
+                    datacroom[in-1].getinfo();
+                    datacroom[in-1].get_mhs(); 
+                    cout << endl;
                 }
-                datpermit[gol] = datacroom[in-1];
-                clear();
-                logo();
-                cout << "\nRequest to join class sent!\nPlease wait until confirmation!\n Class info:\n Class number " << in << endl;
-                datacroom[in-1].getinfo();
-                datacroom[in-1].get_mhs(); 
-                cout << endl;
+                    
 
             } else if(klok == 2 && !bru){// pilihan 2 sebagai tendik
                 string subj;
@@ -593,6 +583,7 @@ void main_menu(){
                 goto exfile;
 
             } else if(klok == 4 && !bru){//tendik permission
+                clear();
                 map<string,croom>::iterator it;
                 int ok, ko = 0;
                 for(it = datpermit.begin(); it != datpermit.end(); it++){
@@ -632,7 +623,7 @@ void main_menu(){
                 lo->getinfo();
                 lo->get_mhs();
 
-            } else if(klok == 5 && bru){
+            } else if(klok == 5 && !bru){
                 goto exfile;
 
             } else {
@@ -662,9 +653,7 @@ void main_menu(){
         }
         case 6:
         {
-            cout << "exit successful.";
             return;
-
         }
         default:
         {
